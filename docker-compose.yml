@@ -1,0 +1,38 @@
+version: '3'
+services:
+  proxy:
+    image: nginx:latest
+    container_name: nginx-proxy
+    ports:
+      - "3000:80"
+    volumes:
+      - ./proxy.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - nginx-v1
+      - nginx-v2
+    networks:
+      - nginx-network
+
+  nginx-v1:
+    build: .
+    container_name: nginx-v1
+    volumes:
+      - ./v1:/usr/share/nginx/html
+    expose:
+      - "80"
+    networks:
+      - nginx-network
+
+  nginx-v2:
+    build: .
+    container_name: nginx-v2
+    volumes:
+      - ./v2:/usr/share/nginx/html
+    expose:
+      - "80"
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: bridge
